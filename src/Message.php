@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace HyperfExt\Mail;
 
-use Hyperf\Utils\Traits\ForwardsCalls;
+use Hyperf\Support\Traits\ForwardsCalls;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Part\DataPart;
@@ -146,7 +146,7 @@ class Message
     public function attachFile(string $file, array $options = []): self
     {
         $attachment = $this->createAttachmentFromPath($file, $options);
-        $this->email->attachPart($attachment);
+        $this->email->addPart($attachment);
 
         return $this;
     }
@@ -157,7 +157,7 @@ class Message
     public function attachData(string $data, string $name, array $options = []): self
     {
         $attachment = $this->createAttachmentFromData($data, $name, $options['mime'] ?? null);
-        $this->email->attachPart($attachment);
+        $this->email->addPart($attachment);
 
         return $this;
     }
@@ -172,7 +172,7 @@ class Message
         }
 
         $dataPart = DataPart::fromPath($file);
-        $this->email->attachPart($dataPart->asInline());
+        $this->email->addPart($dataPart->asInline());
 
         return $this->embeddedFiles[$file] = $dataPart->getContentId();
     }
@@ -183,7 +183,7 @@ class Message
     public function embedData(string $data, string $name, ?string $contentType = null): string
     {
         $dataPart = new DataPart($data, $name, $contentType);
-        $this->email->attachPart($dataPart->asInline());
+        $this->email->addPart($dataPart->asInline());
 
         return $dataPart->getContentId();
     }

@@ -12,8 +12,8 @@ namespace HyperfExt\Mail;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Logger\LoggerFactory;
-use Hyperf\Utils\Arr;
-use Hyperf\Utils\Str;
+use Hyperf\Collection\Arr;
+use Hyperf\Stringable\Str;
 use HyperfExt\Contract\ShouldQueue;
 use HyperfExt\Mail\Concerns\PendingMailable;
 use HyperfExt\Mail\Contracts\MailableInterface;
@@ -24,6 +24,7 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\Mailer\Mailer as SymfonyMailer;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Transport\TransportInterface;
+use function Hyperf\Support\make;
 
 /**
  * @mixin Mailer

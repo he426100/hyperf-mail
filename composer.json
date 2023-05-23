@@ -45,6 +45,7 @@
         "hyperf/event": "~3.0.0",
         "hyperf/filesystem": "~3.0.0",
         "hyperf/framework": "~3.0.0",
+        "hyperf/logger": "~3.0.0",
         "hyperf/translation": "~3.0.0",
         "hyperf/view": "~3.0.0",
         "symfony/mailer": "^6.2.0"
@@ -52,9 +53,9 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
         "hyperf/testing": "~3.0.0",
+        "mockery/mockery": "^1.0",
         "phpstan/phpstan": "^1.9",
-        "swoole/ide-helper": "dev-master",
-        "mockery/mockery": "^1.0"
+        "swoole/ide-helper": "dev-master"
     },
     "suggest": {
         "hyperf/guzzle": "Required to use the mail driver (^2.0).",
