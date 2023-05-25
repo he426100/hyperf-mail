@@ -50,7 +50,7 @@ class LogTransport implements TransportInterface
             $this->logger->debug($this->getMimeEntityString($message));
         }
 
-        return $message;
+        return new SentMessage($message, $envelope);
     }
 
     /**
