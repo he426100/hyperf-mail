@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Mail;
 
-use Hyperf\Utils\ApplicationContext;
+use Hyperf\Context\ApplicationContext;
 use HyperfExt\Mail\Contracts\MailableInterface;
 use HyperfExt\Mail\Events\MailMessageSending;
 use HyperfExt\Mail\Events\MailMessageSent;
@@ -22,6 +22,7 @@ use Symfony\Component\Mailer\Mailer as SymfonyMailer;
 use Symfony\Component\Mime\Email;
 
 /**
+ * TODO: 实现此单元测试
  * @internal
  * @coversNothing
  */
@@ -41,7 +42,6 @@ class MailMailerTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(MailMessageSending::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(MailMessageSent::class));
         $mailer = $this->getMailer();
-        $this->setSwiftMailer($mailer);
         $mailer->setAlwaysFrom('eric@zhu.email', 'Taylor Otwell');
         $mailer->getSymfonyMailer()->shouldReceive('send')->once()->with(m::type(Email::class), null)->andReturnUsing(function ($message) {
             $this->assertEquals(['eric@zhu.email' => 'Taylor Otwell'], $message->getFrom());
@@ -58,7 +58,6 @@ class MailMailerTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(MailMessageSending::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(MailMessageSent::class));
         $mailer = $this->getMailer();
-        $this->setSwiftMailer($mailer);
         $mailer->setAlwaysReturnPath('eric@zhu.email');
         $mailer->getSymfonyMailer()->shouldReceive('send')->once()->with(m::type(Email::class), null)->andReturnUsing(function ($message) {
             $this->assertSame('eric@zhu.email', $message->getReturnPath());
@@ -76,7 +75,6 @@ class MailMailerTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(MailMessageSending::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(MailMessageSent::class));
         $mailer = $this->getMailer($events);
-        $this->setSwiftMailer($mailer);
         $mailer->getSymfonyMailer()->shouldReceive('send')->once()->with(m::type(Email::class), null);
     }
 
@@ -92,14 +90,6 @@ class MailMailerTest extends TestCase
             'bar',
             $mailer->foo()
         );
-    }
-
-    public function setSwiftMailer($mailer)
-    {
-        $symfonyMailer = m::mock(SymfonyMailer::class);
-        $mailer->setSwiftMailer($symfonyMailer);
-
-        return $mailer;
     }
 
     protected function getMailer($events = null): Mailer
