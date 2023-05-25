@@ -13,6 +13,7 @@ namespace HyperfTest\Mail;
 use HyperfExt\Contract\HasMailAddress;
 use HyperfExt\Mail\Mailable;
 use PHPUnit\Framework\TestCase;
+use function Hyperf\Collection\collect;
 
 /**
  * @internal
