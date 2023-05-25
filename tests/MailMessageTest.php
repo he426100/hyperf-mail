@@ -124,7 +124,7 @@ class MailMessageTest extends TestCase
         $this->assertInstanceOf(Message::class, $this->message->setPriority(1));
     }
 
-    public function testGetSwiftMessageMethod()
+    public function testGetMessageMethod()
     {
         $this->assertInstanceOf(Email::class, $this->message->getEmail());
     }

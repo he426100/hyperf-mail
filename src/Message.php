@@ -37,7 +37,7 @@ class Message
     }
 
     /**
-     * Dynamically pass missing methods to the Swift instance.
+     * Dynamically pass missing methods to the instance.
      *
      * @return mixed
      */

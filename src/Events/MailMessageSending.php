@@ -15,7 +15,7 @@ use Symfony\Component\Mime\Email;
 class MailMessageSending
 {
     /**
-     * The Swift message instance.
+     * The message instance.
      */
     public Email $message;
 
