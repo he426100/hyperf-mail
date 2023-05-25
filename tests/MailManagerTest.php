@@ -41,7 +41,7 @@ class MailManagerTest extends TestCase
         $container->shouldReceive('get')->with(MailManagerInterface::class)->andReturn(new MailManager($container));
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The mail transport must be specified.');
+        $this->expectExceptionMessage('The mail transport DSN must be specified.');
         $container->get(MailManagerInterface::class)->mailer('custom_smtp');
     }
 }
