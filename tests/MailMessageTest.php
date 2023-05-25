@@ -45,13 +45,19 @@ class MailMessageTest extends TestCase
 
     public function testFromMethod()
     {
-        $this->email->shouldReceive('from')->once()->with(new Address('foo@bar.baz', 'Foo'));
+        $this->email->shouldReceive('from')->once()->with(m::on(function ($arg) {
+            $this->assertEquals(new Address('foo@bar.baz', 'Foo'), $arg);
+            return true;
+        }));
         $this->assertInstanceOf(Message::class, $this->message->setFrom('foo@bar.baz', 'Foo'));
     }
 
     public function testSenderMethod()
     {
-        $this->email->shouldReceive('sender')->once()->with(new Address('foo@bar.baz', 'Foo'));
+        $this->email->shouldReceive('sender')->once()->with(m::on(function ($arg) {
+            $this->assertEquals(new Address('foo@bar.baz', 'Foo'), $arg);
+            return true;
+        }));
         $this->assertInstanceOf(Message::class, $this->message->setSender('foo@bar.baz', 'Foo'));
     }
 
@@ -63,31 +69,46 @@ class MailMessageTest extends TestCase
 
     public function testToMethod()
     {
-        $this->email->shouldReceive('to')->once()->with(new Address('foo@bar.baz', 'Foo'));
+        $this->email->shouldReceive('to')->once()->with(m::on(function ($arg) {
+            $this->assertEquals(new Address('foo@bar.baz', 'Foo'), $arg);
+            return true;
+        }));
         $this->assertInstanceOf(Message::class, $this->message->setTo('foo@bar.baz', 'Foo'));
     }
 
     public function testToMethodWithOverride()
     {
-        $this->email->shouldReceive('to')->once()->with(new Address('foo@bar.baz', 'Foo'));
+        $this->email->shouldReceive('to')->once()->with(m::on(function ($arg) {
+            $this->assertEquals(new Address('foo@bar.baz', 'Foo'), $arg);
+            return true;
+        }));
         $this->assertInstanceOf(Message::class, $this->message->setTo([['address' => 'foo@bar.baz', 'name' => 'Foo']]));
     }
 
     public function testCcMethod()
     {
-        $this->email->shouldReceive('cc')->once()->with(new Address('foo@bar.baz', 'Foo'));
+        $this->email->shouldReceive('addCc')->once()->with(m::on(function ($arg) {
+            $this->assertEquals(new Address('foo@bar.baz', 'Foo'), $arg);
+            return true;
+        }));
         $this->assertInstanceOf(Message::class, $this->message->setCc('foo@bar.baz', 'Foo'));
     }
 
     public function testBccMethod()
     {
-        $this->email->shouldReceive('bcc')->once()->with(new Address('foo@bar.baz', 'Foo'));
+        $this->email->shouldReceive('addBcc')->once()->with(m::on(function ($arg) {
+            $this->assertEquals(new Address('foo@bar.baz', 'Foo'), $arg);
+            return true;
+        }));
         $this->assertInstanceOf(Message::class, $this->message->setBcc('foo@bar.baz', 'Foo'));
     }
 
     public function testReplyToMethod()
     {
-        $this->email->shouldReceive('replyTo')->once()->with(new Address('foo@bar.baz', 'Foo'));
+        $this->email->shouldReceive('replyTo')->once()->with(m::on(function ($arg) {
+            $this->assertEquals(new Address('foo@bar.baz', 'Foo'), $arg);
+            return true;
+        }));
         $this->assertInstanceOf(Message::class, $this->message->setReplyTo('foo@bar.baz', 'Foo'));
     }
 
@@ -114,7 +135,7 @@ class MailMessageTest extends TestCase
         $message = $this->getMockBuilder(Message::class)->onlyMethods(['createAttachmentFromPath'])->setConstructorArgs([$email])->getMock();
         $attachment = m::mock(DataPart::class);
         $message->expects($this->once())->method('createAttachmentFromPath')->with($this->equalTo('foo.jpg'), $this->equalTo(['mime' => 'image/jpeg', 'as' => 'bar.jpg']))->willReturn($attachment);
-        $email->shouldReceive('attachPart')->once()->with($attachment);
+        $email->shouldReceive('addPart')->once()->with($attachment);
         $message->attachFile('foo.jpg', ['mime' => 'image/jpeg', 'as' => 'bar.jpg']);
     }
 
@@ -123,8 +144,8 @@ class MailMessageTest extends TestCase
         $email = m::mock(Email::class);
         $message = $this->getMockBuilder(Message::class)->onlyMethods(['createAttachmentFromData'])->setConstructorArgs([$email])->getMock();
         $attachment = m::mock(DataPart::class);
-        $message->expects($this->once())->method('createAttachmentFromData')->with($this->equalTo('foo'), $this->equalTo('name'), $this->equalTo(['mime' => 'image/jpeg']))->willReturn($attachment);
-        $email->shouldReceive('attachPart')->once()->with($attachment);
+        $message->expects($this->once())->method('createAttachmentFromData')->with($this->equalTo('foo'), $this->equalTo('name'), $this->equalTo('image/jpeg'))->willReturn($attachment);
+        $email->shouldReceive('addPart')->once()->with($attachment);
         $message->attachData('foo', 'name', ['mime' => 'image/jpeg']);
     }
 }
