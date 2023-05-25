@@ -67,12 +67,6 @@ return [
             'dsn' => env('MAIL_MAILGUN_DSN'),
         ],
 
-        'postmark' => [
-            // postmark+smtp://ID@default
-            // postmark+api://KEY@default
-            'dsn' => env('MAIL_POSTMARK_DSN'),
-        ],
-
         'sendmail' => [
             'dsn' => 'sendmail://default',
         ],

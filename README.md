@@ -9,7 +9,7 @@
     - [配置内容](#configuring-the-body)
     - [附件](#attachments)
     - [内部附件](#inline-attachments)
-    - [自定义 SwiftMail 消息](#customizing-the-swiftmailer-message)
+    - [自定义 Mail 消息](#customizing-the-mailer-message)
 - [发送邮件](#sending-mail)
     - [队列邮件](#queueing-mail)
 - [渲染通知](#rendering-mailables)
@@ -21,7 +21,7 @@
 <a name="introduction"></a>
 ## 简介
 
-该组件衍生自 [illuminate/mail](https://github.com/illuminate/mail )，基于 [SwiftMailer](https://swiftmailer.symfony.com/) 函数库提供了一套干净、简洁的 API ，可以为 SMTP、Mailgun、Postmark、AWS SES、阿里云 DM 和 `sendmail` 提供驱动，让你可以快速从本地或云端服务自由地发送邮件。
+该组件衍生自 [illuminate/mail](https://github.com/illuminate/mail )，基于 [symfony/mailer](https://github.com/symfony/mailer) 函数库提供了一套干净、简洁的 API ，可以为 SMTP、Mailgun、AWS SES、阿里云 DM 和 `sendmail` 提供驱动，让你可以快速从本地或云端服务自由地发送邮件。
 
 <a name="installation"></a>
 ### 安装
@@ -36,12 +36,12 @@ composer require hyperf-ext/mail
 php bin/hyperf.php vendor:publish hyperf-ext/mail
 ```
 
-发布的配置文件中配置的每个邮件程序都可能有自己的「传输方式」和配置选项，这将允许你的应用程序使用不同的邮件服务来发送特定的邮件。例如，你的应用程序可能使用 Postmark 发送事务性邮件，而使用 AWS SES 发送批量邮件。
+发布的配置文件中配置的每个邮件程序都可能有自己的「传输方式」和配置选项，这将允许你的应用程序使用不同的邮件服务来发送特定的邮件。例如，你的应用程序可能使用 Mailgun 发送事务性邮件，而使用 AWS SES 发送批量邮件。
 
 <a name="driver-prerequisites"></a>
 ### 驱动前提
 
-基于 API 的驱动，比如 Mailgun 和 Postmark 通常比 SMTP 服务器更简单快速。如果可以的话，你应该尽可能使用这些驱动。所有的 API 驱动都需要 [Hyperf Guzzle](https://hyperf.wiki/2.0/#/zh-cn/guzzle) 组件，这个函数库可以通过 Composer 包管理安装：
+基于 API 的驱动，比如 Mailgun 通常比 SMTP 服务器更简单快速。如果可以的话，你应该尽可能使用这些驱动。所有的 API 驱动都需要 [Hyperf Guzzle](https://hyperf.wiki/2.0/#/zh-cn/guzzle) 组件，这个函数库可以通过 Composer 包管理安装：
 
 ```shell script
 composer require hyperf/guzzle
@@ -62,29 +62,6 @@ composer require hyperf/guzzle
             // 如果你不使用此「US」区域, 你可以定义自己的区域终端地址：
             // https://documentation.mailgun.com/en/latest/api-intro.html#mailgun-regions
             'endpoint' => env('MAIL_MAILGUN_ENDPOINT', 'api.mailgun.net'),
-        ],
-    ],
-    // ...
-];
-```
-
-#### Postmark 驱动
-
-要使用 Postmark 驱动， 需要先通过 Composer 安装 Postmark 的 SwiftMailer 函数库：
-
-```shell script
-composer require wildbit/swiftmailer-postmark
-```
-
-然后，安装 Hyperf Guzzle 并设置 `config/autoload/mail.php` 配置文件中的 `default` 选项。最后, 确认你的配置文件包含以下选项:
-
-```php
-[
-    // ...
-    'postmark' => [
-        'transport' => \HyperfExt\Mail\Transport\PostmarkTransport::class,
-        'options' => [
-            'token' => env('MAIL_POSTMARK_TOKEN'),
         ],
     ],
     // ...
@@ -480,9 +457,9 @@ public function build()
 </body>
 ```
 
-### 自定义 SwiftMailer 消息
+### 自定义 mailer 消息
 
-`Mailable` 基类的 `withSwiftMessage` 方法允许你注册一个回调，它将在发送消息之前被调用，原始的 SwiftMailer 消息将作为该回调的参数。借此机会，你可以在发消息前对其进行定制。
+`Mailable` 基类的 `withMessage` 方法允许你注册一个回调，它将在发送消息之前被调用，原始的 Mailer 消息将作为该回调的参数。借此机会，你可以在发消息前对其进行定制。
 
 ```php
 /**
@@ -494,7 +471,7 @@ public function build()
 {
     $this->htmlView('emails.orders.shipped');
 
-    $this->withSwiftMessage(function ($message) {
+    $this->withMessage(function ($message) {
         $message->getHeaders()
                 ->addTextHeader('Custom-Header', 'HeaderValue');
     });
@@ -558,7 +535,7 @@ foreach (['taylor@example.com', 'dries@example.com'] as $recipient) {
 默认情况下，组件将使用你的 `mail` 配置文件中配置为 `default` 邮件程序。 但是，你可以使用 `mailer` 方法通过特定的邮件程序配置发送：
 
 ```php
-Mail::mailer('postmark')
+Mail::mailer('mailgun')
     ->to($request->user())
     ->send(new OrderShipped($order));
 ```
